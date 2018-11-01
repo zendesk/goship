@@ -1,0 +1,14 @@
+---
+#username: DefaultUser
+#use_private_network: true
+#use_dns: true
+#cache_directory: /tmp
+#cache_file_prefix: goship_cache_
+#cache_validity: 300
+
+#providers:
+#    aws.ec2:
+#        - profile: production
+#          regions: us-east-1
+#        - profile: sandbox
+#          regions: eu-west-1
