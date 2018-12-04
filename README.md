@@ -34,3 +34,9 @@ In order to uncache existing files, just use `--uncache` flag.
 * Szymon Władyka ([swladyka](https://github.com/swladyka))
 * Karol Gil ([karolgil](https://github.com/karolgil))
 * Leszek Charkiewicz ([lcharkiewicz](https://github.com/lcharkiewicz))
+
+## License
+
+Copyright 2018 Zendesk
+
+Licensed under the [Apache License, Version 2.0](LICENSE)
