@@ -18,7 +18,7 @@ Helps find and connect to particular cloud resources using defined providers.
 
 #### 4. Configure providers
 
-see `config.yaml.example` for the proper configuration format,
+see `config.yaml.example` for the proper configuration format
 
 #### 5. Read help & Enjoy
 
