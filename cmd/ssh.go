@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/cobra"
 	"github.com/zendesk/goship/color"
 	"github.com/zendesk/goship/config"
 	"github.com/zendesk/goship/utils"
-	"github.com/spf13/cobra"
 )
 
 var sshCmd = &cobra.Command{

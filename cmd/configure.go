@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/zendesk/goship/color"
-	"github.com/zendesk/goship/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tcnksm/go-input"
+	"github.com/zendesk/goship/color"
+	"github.com/zendesk/goship/config"
 	"gopkg.in/yaml.v2"
 	"os"
 	"strconv"
@@ -128,15 +128,15 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 	fmt.Printf("Config file: %s", viper.ConfigFileUsed())
 	cacheFile, err := os.Create(ConfigFile)
 	if err != nil {
-		color.PrintRed(fmt.Sprintf("Error while creating config file %s: %s", ConfigFile, err.Error()))
+		color.PrintRed(fmt.Sprintf("Error while creating config file %s: %s\n", ConfigFile, err.Error()))
 		os.Exit(1)
 	}
 	defer cacheFile.Close()
 
 	_, err = cacheFile.Write(c)
 	if err != nil {
-		color.PrintRed(fmt.Sprintf("Error while writing config file %s: %s", ConfigFile, err.Error()))
+		color.PrintRed(fmt.Sprintf("Error while writing config file %s: %s\n", ConfigFile, err.Error()))
 		os.Exit(1)
 	}
-	color.PrintGreen(fmt.Sprintf("Config file wrote to `%s`. Please refer to documentation in order to configure cloud providers", ConfigFile))
+	color.PrintGreen(fmt.Sprintf("Config file wrote to `%s`. Please refer to documentation in order to configure cloud providers\n", ConfigFile))
 }

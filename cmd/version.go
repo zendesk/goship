@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/zendesk/goship/version"
 	"github.com/spf13/cobra"
+	"github.com/zendesk/goship/version"
 )
 
 // helloCmd represents the hello command
