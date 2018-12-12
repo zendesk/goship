@@ -14,7 +14,7 @@ var (
 func CheckForNewVersion() {
 
 	if config.GlobalConfig.Verbose {
-		color.PrintYellow("Checking for newest version temporarily disabled")
+		color.PrintYellow("Checking for newest version temporarily disabled\n")
 	}
 	return
 }

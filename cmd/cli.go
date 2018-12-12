@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/zendesk/goship/color"
-	"github.com/zendesk/goship/config"
-	"github.com/mitchellh/go-homedir"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/zendesk/goship/color"
+	"github.com/zendesk/goship/config"
+	"github.com/zendesk/goship/version"
 )
 
 var (
@@ -35,6 +36,8 @@ func initRootFlags(cmd *cobra.Command, args []string) {
 	if forceUncache {
 		config.GlobalConfig.CacheValidity = 0
 	}
+
+	version.CheckForNewVersion()
 }
 
 // Execute cobra
@@ -68,7 +71,6 @@ func init() {
 	viper.BindPFlag("cache_file_prefix", RootCmd.PersistentFlags().Lookup("cache-file-prefix"))
 	viper.BindPFlag("cache_validity", RootCmd.PersistentFlags().Lookup("cache-validity"))
 	viper.BindPFlag("verbose", RootCmd.PersistentFlags().Lookup("verbose"))
-
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -99,6 +101,6 @@ func initConfig() {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		color.PrintRed(fmt.Sprintf("Error while reading file %s", ConfigFile))
+		color.PrintRed(fmt.Sprintf("Error while reading file %s\n", ConfigFile))
 	}
 }
