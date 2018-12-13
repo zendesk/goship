@@ -10,7 +10,7 @@ import (
 
 var (
 	// VersionNumber defines a version
-	VersionNumber = "1.0.0"
+	VersionNumber = "1.0.1"
 )
 
 // CheckForNewVersion checks for new version
