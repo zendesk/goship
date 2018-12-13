@@ -9,6 +9,6 @@
 #providers:
 #    aws.ec2:
 #        - profile: production
-#          regions: us-east-1
+#          regions: [us-east-1]
 #        - profile: sandbox
-#          regions: eu-west-1
+#          regions: [eu-west-1]

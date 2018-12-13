@@ -3,12 +3,14 @@ package cache
 import (
 	"encoding/gob"
 	"fmt"
+	"os"
+	"path"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/zendesk/goship/config"
 	"github.com/zendesk/goship/providers"
 	"github.com/zendesk/goship/resources"
-	"os"
-	"time"
 )
 
 // AwsEc2Cache implements GoshipCache interface for EC2
@@ -29,7 +31,7 @@ func NewAwsEc2Cache(provider providers.AwsEc2Provider) *AwsEc2Cache {
 }
 
 func (g *AwsEc2Cache) cacheFilePath() string {
-	return fmt.Sprintf("%s/%s%s_%s_%s", config.GlobalConfig.CacheDirectory, config.GlobalConfig.CacheFilePrefix, g.Provider.Name(), g.Provider.AwsProfileName, g.Provider.AwsRegion)
+	return fmt.Sprintf("%s%s_%s_%s", path.Join(config.GlobalConfig.CacheDirectory, config.GlobalConfig.CacheFilePrefix), g.Provider.Name(), g.Provider.AwsProfileName, g.Provider.AwsRegion)
 }
 
 func (g *AwsEc2Cache) cacheOutdated() bool {

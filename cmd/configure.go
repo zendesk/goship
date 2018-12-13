@@ -138,5 +138,5 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 		color.PrintRed(fmt.Sprintf("Error while writing config file %s: %s\n", ConfigFile, err.Error()))
 		os.Exit(1)
 	}
-	color.PrintGreen(fmt.Sprintf("Config file wrote to `%s`. Please refer to documentation in order to configure cloud providers\n", ConfigFile))
+	color.PrintGreen(fmt.Sprintf("Config file saved to `%s`. Please refer to documentation in order to configure cloud providers\n", ConfigFile))
 }

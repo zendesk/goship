@@ -70,6 +70,9 @@ func initCaches() (cacheList cache.GlobalCacheList) {
 func getCacheList() cache.GlobalCacheList {
 
 	cacheList := initCaches()
+	if len(cacheList) == 0 {
+		color.PrintYellow(fmt.Sprintf("WARNING: No valid providers configured. Please refer to the documentation in order to configure it.\n"))
+	}
 	refreshStart := time.Now()
 	cacheList.RefreshInParallel(false)
 	refreshElapsed := time.Since(refreshStart)
