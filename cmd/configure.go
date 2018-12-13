@@ -117,7 +117,7 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 		ValidateFunc: validatePath,
 	})
 
-	config.GlobalConfig.CacheFilePrefix, _ = ui.Ask("Default scp binary", &input.Options{
+	config.GlobalConfig.ScpBinary, _ = ui.Ask("Default scp binary", &input.Options{
 		Required:     false,
 		Default:      config.GlobalConfig.ScpBinary,
 		Loop:         true,
