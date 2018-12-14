@@ -1,1 +1,5 @@
 language: go
+script:
+#  - make test-unit
+  - make test-style
+  - make
