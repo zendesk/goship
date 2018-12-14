@@ -7,7 +7,6 @@ import (
 	"path"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/zendesk/goship/config"
 	"github.com/zendesk/goship/providers"
 	"github.com/zendesk/goship/resources"
@@ -67,12 +66,10 @@ func (g *AwsEc2Cache) Refresh(force bool) (err error) {
 		g.Read()
 		return nil
 	}
-	config := aws.Config{}
 
-	provider := providers.AwsEc2Provider{AwsConfig: config, AwsRegion: g.Provider.AwsRegion, AwsProfileName: g.Provider.AwsProfileName}
-	provider.Init()
+	g.Provider.Init()
 
-	result, err := provider.GetResources()
+	result, err := g.Provider.GetResources()
 	if err != nil {
 		return err
 	}
