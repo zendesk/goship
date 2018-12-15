@@ -1,4 +1,4 @@
-# goship
+# goship [![Build Status](https://travis-ci.com/zendesk/goship.svg?branch=master)](https://travis-ci.com/zendesk/goship)
 
 Helps find and connect to particular cloud resources using defined providers.
 
