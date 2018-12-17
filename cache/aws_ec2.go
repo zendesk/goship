@@ -80,7 +80,7 @@ func (g *AwsEc2Cache) Refresh(force bool) (refreshed bool, err error) {
 	if err != nil {
 		return false, err
 	}
-	return false, nil
+	return true, nil
 }
 
 // Save saves the cache to cache file
