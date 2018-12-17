@@ -21,7 +21,13 @@ func CheckForNewVersion() {
 		Repository: "goship",
 	}
 
-	result, _ := latest.Check(githubTag, VersionNumber)
+	result, err := latest.Check(githubTag, VersionNumber)
+	if err != nil {
+		if config.GlobalConfig.Verbose {
+			color.PrintYellow(fmt.Sprintf("Error while checking for the newest version: %s", err))
+		}
+		return
+	}
 
 	if result.Outdated && config.GlobalConfig.Verbose {
 		color.PrintYellow(fmt.Sprintf("Newer version (%s) available! Checkout project repository to upgrade to the newest version.\n", result.Current))
