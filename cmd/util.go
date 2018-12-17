@@ -76,7 +76,11 @@ func getCacheList() cache.GlobalCacheList {
 	refreshStart := time.Now()
 	cacheList.RefreshInParallel(false)
 	refreshElapsed := time.Since(refreshStart)
-	fmt.Printf("Cache refresh total time: %s\n\n", refreshElapsed)
+
+	if config.GlobalConfig.Verbose {
+		fmt.Printf("Cache operations total time: %s\n\n", refreshElapsed)
+	}
+
 	return cacheList
 }
 
