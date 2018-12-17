@@ -24,7 +24,7 @@ func CheckForNewVersion() {
 	result, err := latest.Check(githubTag, VersionNumber)
 	if err != nil {
 		if config.GlobalConfig.Verbose {
-			color.PrintYellow(fmt.Sprintf("Error while checking for the newest version: %s", err))
+			color.PrintYellow(fmt.Sprintf("Error while checking for the newest version: %s\n", err))
 		}
 		return
 	}
