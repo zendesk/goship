@@ -22,7 +22,7 @@ func (cl *GlobalCacheList) RefreshInParallel(force bool) error {
 			defer wg.Done()
 			refreshed, err := cache.Refresh(force)
 			if err != nil {
-				color.PrintRed(fmt.Sprintf("Error while refreshing cache: %s", err))
+				color.PrintRed(fmt.Sprintf("Error while refreshing cache: %s\n", err))
 			}
 			refreshElapsed := time.Since(refreshStart)
 			if config.GlobalConfig.Verbose {
