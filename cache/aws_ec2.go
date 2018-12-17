@@ -61,26 +61,26 @@ func (g *AwsEc2Cache) Len() int {
 }
 
 // Refresh refreshes resources
-func (g *AwsEc2Cache) Refresh(force bool) (err error) {
+func (g *AwsEc2Cache) Refresh(force bool) (refreshed bool, err error) {
 	if g.cacheOutdated() == false && force == false {
 		g.Read()
-		return nil
+		return false, nil
 	}
 
 	g.Provider.Init()
 
 	result, err := g.Provider.GetResources()
 	if err != nil {
-		return err
+		return false, err
 	}
 	for _, r := range result {
 		g.Result = append(g.Result, r.(*resources.Ec2Instance))
 	}
 	err = g.Save()
 	if err != nil {
-		return err
+		return false, err
 	}
-	return nil
+	return true, nil
 }
 
 // Save saves the cache to cache file

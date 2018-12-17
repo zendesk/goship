@@ -6,7 +6,7 @@ import "github.com/zendesk/goship/resources"
 type GoshipCache interface {
 	CacheName() string
 	Resources() []resources.Resource
-	Refresh(bool) error
+	Refresh(bool) (bool, error)
 	Save() error
 	Read() error
 	Len() int

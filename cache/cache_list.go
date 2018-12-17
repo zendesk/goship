@@ -20,10 +20,17 @@ func (cl *GlobalCacheList) RefreshInParallel(force bool) error {
 		go func(cache GoshipCache) {
 			refreshStart := time.Now()
 			defer wg.Done()
-			cache.Refresh(force)
+			refreshed, err := cache.Refresh(force)
+			if err != nil {
+				color.PrintRed(fmt.Sprintf("Error while refreshing cache: %s\n", err))
+			}
 			refreshElapsed := time.Since(refreshStart)
 			if config.GlobalConfig.Verbose {
-				color.PrintGreen(fmt.Sprintf("[%s] Cache refresh in: %s. Read %d instances\n", cache.CacheName(), refreshElapsed, cache.Len()))
+				if refreshed {
+					color.PrintGreen(fmt.Sprintf("[%s] Cache refresh took: %s. Read %d instances\n", cache.CacheName(), refreshElapsed, cache.Len()))
+				} else {
+					color.PrintGreen(fmt.Sprintf("[%s] Cache read took: %s. Read %d instances\n", cache.CacheName(), refreshElapsed, cache.Len()))
+				}
 			}
 		}(c)
 	}
