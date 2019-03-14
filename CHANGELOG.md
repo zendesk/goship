@@ -1,3 +1,9 @@
+## 1.0.3 (December 17, 2018)
+
+BUG FIXES:
+* [[GH-11](https://github.com/zendesk/goship/pull/11)]: Add missing ssh/scp extra args support
+
+
 ## 1.0.2 (December 17, 2018)
 
 BUG FIXES:
