@@ -49,14 +49,17 @@ func sshCmdFunc(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	sshCommandWithArgs := []string{
-		config.GlobalConfig.SSHBinary,
+	baseCommand := []string{config.GlobalConfig.SSHBinary}
+	baseCommand = append(baseCommand, config.GlobalConfig.SSHExtraParams...)
+
+	sshCommandWithArgs := append(baseCommand, []string{
 		fmt.Sprintf(
 			"%s@%s",
 			config.GlobalConfig.LoginUsername,
 			resource.ConnectIdentifier(config.GlobalConfig.UsePrivateNetwork, config.GlobalConfig.UseDNS),
 		),
-	}
+	}...)
+
 	color.PrintGreen(fmt.Sprintf("Logging into %s (%s)\n",
 		resource.Name(), resource.GetTag("environment")))
 

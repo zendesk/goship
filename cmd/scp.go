@@ -68,6 +68,8 @@ func scpCmdFunc(cmd *cobra.Command, args []string) {
 		cmd.Annotations["local_path"],
 	}
 	baseCommand := []string{config.GlobalConfig.ScpBinary}
+	baseCommand = append(baseCommand, config.GlobalConfig.ScpExtraParams...)
+
 	if checkIfRemotePath(cmd.Annotations["copy_from"]) {
 		baseCommand = append(baseCommand, command.CopyFromRemoteCmd()...)
 	} else {
