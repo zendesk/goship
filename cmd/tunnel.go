@@ -56,8 +56,10 @@ func tunnelCmdFunc(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	tunnelCommand := []string{
-		config.GlobalConfig.SSHBinary,
+	baseCommand := []string{config.GlobalConfig.SSHBinary}
+	baseCommand = append(baseCommand, config.GlobalConfig.SSHExtraParams...)
+
+	tunnelCommand := append(baseCommand, []string{
 		fmt.Sprintf(
 			"%s@%s",
 			config.GlobalConfig.LoginUsername,
@@ -70,7 +72,8 @@ func tunnelCmdFunc(cmd *cobra.Command, args []string) {
 			cmd.Annotations["local_bind_address"],
 			cmd.Annotations["remote_bind_address"],
 		),
-	}
+	}...)
+
 	color.PrintGreen(fmt.Sprintf("Creating ssh tunnel to %s (%s)\n",
 		resource.Name(), resource.GetTag("environment")))
 
