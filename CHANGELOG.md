@@ -1,4 +1,9 @@
-## 1.0.3 (December 17, 2018)
+## 1.0.4 (March 15, 2019)
+
+* EC2 provider: fallback to Private IP/DNS when public is not available
+
+
+## 1.0.3 (March 14, 2019)
 
 BUG FIXES:
 * [[GH-11](https://github.com/zendesk/goship/pull/11)]: Add missing ssh/scp extra args support
