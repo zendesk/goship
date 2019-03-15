@@ -28,7 +28,7 @@ func (i *Ec2Instance) Name() string {
 
 // ConnectIdentifier returns the identifier (eg. IP or DNS name) which will be used when connecting to instances
 func (i *Ec2Instance) ConnectIdentifier(usePrivateID bool, useDNS bool) string {
-	if usePrivateID {
+	if usePrivateID || i.NativeObject.PublicDnsName == nil || i.NativeObject.PublicIpAddress == nil {
 		if useDNS {
 			return *i.NativeObject.PrivateDnsName
 		}
