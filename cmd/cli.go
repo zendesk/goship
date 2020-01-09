@@ -57,7 +57,7 @@ func init() {
 
 	RootCmd.PersistentFlags().BoolVarP(&forceUncache, "uncache", "", false, "Drop any existing cache before obtaining resource list")
 	RootCmd.PersistentFlags().StringP("username", "u", "", "Username to use when logging into resources")
-	RootCmd.PersistentFlags().StringP("command", "c", "", "command to be executed via SSH (applicable to ssh command only)")
+	RootCmd.PersistentFlags().StringP("ssh-command", "c", "", "command to be executed via SSH (applicable to ssh command only)")
 	RootCmd.PersistentFlags().BoolP("verbose", "v", false, "Be more verbose")
 	RootCmd.PersistentFlags().BoolP("use-private-network", "p", false, "Use private resource identification")
 	RootCmd.PersistentFlags().BoolP("use-dns", "d", false, "Use DNS instead of Resource IP")
@@ -67,7 +67,7 @@ func init() {
 	RootCmd.PersistentFlags().UintP("cache-validity", "t", 300, "Cache validity in seconds")
 
 	viper.BindPFlag("username", RootCmd.PersistentFlags().Lookup("username"))
-	viper.BindPFlag("command", RootCmd.PersistentFlags().Lookup("command"))
+	viper.BindPFlag("ssh-command", RootCmd.PersistentFlags().Lookup("ssh-command"))
 	viper.BindPFlag("use_private_network", RootCmd.PersistentFlags().Lookup("use-private-network"))
 	viper.BindPFlag("use_dns", RootCmd.PersistentFlags().Lookup("use-dns"))
 	viper.BindPFlag("cache_directory", RootCmd.PersistentFlags().Lookup("cache-directory"))

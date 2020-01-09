@@ -61,8 +61,14 @@ func sshCmdFunc(cmd *cobra.Command, args []string) {
 		),
 	}...)
 
-	if config.GlobalConfig.SSHCommand != "" {
-		sshCommandWithArgs = append(sshCommandWithArgs, strings.Split(config.GlobalConfig.SSHCommand, " ")...)
+    sshCommand, err := RootCmd.PersistentFlags().GetString("ssh-command")
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+		os.Exit(1)
+	}
+
+	if sshCommand != "" {
+		sshCommandWithArgs = append(sshCommandWithArgs, strings.Split(sshCommand, " ")...)
 	}
 
 	color.PrintGreen(fmt.Sprintf("Logging into %s (%s)\n",
