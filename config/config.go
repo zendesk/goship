@@ -9,6 +9,7 @@ type Config struct {
 	CacheFilePrefix   string `mapstructure:"cache_file_prefix" yaml:"cache_file_prefix"`
 	CacheValidity     uint64 `mapstructure:"cache_validity" yaml:"cache_validity"`
 	Verbose           bool   `mapstructure:"verbose" yaml:"verbose"`
+	SSHCommand        string `mapstructure:"command" yaml:"command"`
 
 	SSHBinary      string   `mapstructure:"ssh_binary" yaml:"ssh_binary"`
 	SSHExtraParams []string `mapstructure:"ssh_extra_params" yaml:"ssh_extra_params"`

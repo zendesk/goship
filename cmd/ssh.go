@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/zendesk/goship/color"
@@ -11,7 +12,7 @@ import (
 )
 
 var sshCmd = &cobra.Command{
-	Use:    "ssh <search_keyword> [environment]",
+	Use:    "ssh <search_keyword> [environment] [--command \"<command to execute via ssh>\"]",
 	Short:  "Connects to resources via SSH",
 	Long:   `Connects to resources via SSH`,
 	PreRun: setSSHArgsFunc,
@@ -59,6 +60,10 @@ func sshCmdFunc(cmd *cobra.Command, args []string) {
 			resource.ConnectIdentifier(config.GlobalConfig.UsePrivateNetwork, config.GlobalConfig.UseDNS),
 		),
 	}...)
+
+	if config.GlobalConfig.SSHCommand != "" {
+		sshCommandWithArgs = append(sshCommandWithArgs, strings.Split(config.GlobalConfig.SSHCommand, " ")...)
+	}
 
 	color.PrintGreen(fmt.Sprintf("Logging into %s (%s)\n",
 		resource.Name(), resource.GetTag("environment")))
