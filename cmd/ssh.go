@@ -12,7 +12,7 @@ import (
 )
 
 var sshCmd = &cobra.Command{
-	Use:    "ssh <search_keyword> [environment] [--command \"<command to execute via ssh>\"]",
+	Use:    "ssh <search_keyword> [environment] [--ssh-command \"<command to execute via ssh>\"]",
 	Short:  "Connects to resources via SSH",
 	Long:   `Connects to resources via SSH`,
 	PreRun: setSSHArgsFunc,
