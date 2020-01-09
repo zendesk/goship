@@ -1,3 +1,9 @@
+## 1.0.5 (January 9, 2020)
+
+NEW FEATURES:
+* [[GH-13](https://github.com/zendesk/goship/pull/13)]: Implemented --ssh-command flag for ssh command for remote execution
+
+
 ## 1.0.4 (March 15, 2019)
 
 * EC2 provider: fallback to Private IP/DNS when public is not available
