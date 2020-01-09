@@ -61,7 +61,7 @@ func sshCmdFunc(cmd *cobra.Command, args []string) {
 		),
 	}...)
 
-    sshCommand, err := RootCmd.PersistentFlags().GetString("ssh-command")
+	sshCommand, err := RootCmd.PersistentFlags().GetString("ssh-command")
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 		os.Exit(1)
