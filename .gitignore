@@ -16,3 +16,6 @@
 # JETBRAINS
 *.iml
 build/
+
+# main binary
+goship
