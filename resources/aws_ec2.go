@@ -2,12 +2,21 @@ package resources
 
 import (
 	"bytes"
+	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/service/ec2instanceconnect"
+	"github.com/zendesk/goship/config"
+	"io/ioutil"
 )
 
 // Ec2Instance represents resource for ec2 instances
 type Ec2Instance struct {
 	NativeObject ec2.Instance
+
+	// Store AWS Profile name so we can recreate AWS Session when EC2 Instance Connect is enabled
+	ProfileName string
 
 	ShortOutputTemplate string
 	LongOutputTemplate  string
@@ -27,7 +36,7 @@ func (i *Ec2Instance) Name() string {
 }
 
 // ConnectIdentifier returns the identifier (eg. IP or DNS name) which will be used when connecting to instances
-func (i *Ec2Instance) ConnectIdentifier(usePrivateID bool, useDNS bool) string {
+func (i *Ec2Instance) ConnectIdentifier(usePrivateID, useDNS bool) string {
 	if usePrivateID || i.NativeObject.PublicDnsName == nil || i.NativeObject.PublicIpAddress == nil {
 		if useDNS {
 			return *i.NativeObject.PrivateDnsName
@@ -54,6 +63,11 @@ func (i *Ec2Instance) GetTag(tagName string) string {
 		}
 	}
 	return ""
+}
+
+// GetZone returns Available Zone
+func (i *Ec2Instance) GetZone() string {
+	return *i.NativeObject.Placement.AvailabilityZone
 }
 
 // RenderShortOutput renders the list output for resource
@@ -90,4 +104,37 @@ func (i *Ec2Instance) String() string {
 // SortKey returns sort key
 func (i *Ec2Instance) SortKey() string {
 	return i.GetTag("Name")
+}
+
+// PushSSHKey sends SSH key to EC2 Instance Connect
+func (i *Ec2Instance) PushSSHKey(KeyPath string) error {
+	key, err := ioutil.ReadFile(config.GlobalConfig.EC2ConnectKeyPath)
+
+	if err != nil {
+		return fmt.Errorf("failed to read SSH key from %s: %w", config.GlobalConfig.EC2ConnectKeyPath, err)
+	}
+
+	zone := i.GetZone()
+	region := zone[:len(zone)-1]
+
+	s, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+		Profile:           i.ProfileName,
+		Config:            aws.Config{Region: aws.String(region)},
+	})
+
+	if err != nil {
+		return fmt.Errorf("failed to create AWS Session: %w", err)
+	}
+
+	svc := ec2instanceconnect.New(s)
+	input := &ec2instanceconnect.SendSSHPublicKeyInput{
+		AvailabilityZone: aws.String(zone),
+		InstanceId:       aws.String(i.ResourceID()),
+		InstanceOSUser:   aws.String(config.GlobalConfig.LoginUsername),
+		SSHPublicKey:     aws.String(string(key)),
+	}
+	_, err = svc.SendSSHPublicKey(input)
+
+	return err
 }

@@ -50,6 +50,14 @@ func sshCmdFunc(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
+	if config.GlobalConfig.UseEC2Connect {
+		err := pushSSHKey(resource)
+		if err != nil {
+			fmt.Printf("Failed to push SSH key: %v", err)
+			os.Exit(1)
+		}
+	}
+
 	baseCommand := []string{config.GlobalConfig.SSHBinary}
 	baseCommand = append(baseCommand, config.GlobalConfig.SSHExtraParams...)
 

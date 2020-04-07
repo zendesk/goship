@@ -148,3 +148,13 @@ func checkIfRemotePath(p string) bool {
 func parseScpURL(p string) (string, string) {
 	return strings.Split(p, ":")[0], strings.Split(p, ":")[1]
 }
+
+func pushSSHKey(r resources.Resource) error {
+	ec2, ok := r.(*resources.Ec2Instance)
+	if !ok {
+		return fmt.Errorf("pushing SSH key is supported only for EC2 instances")
+	}
+	color.PrintGreen(fmt.Sprintf("Sending SSH key to AWS SSM for %s (%s) in %s\n",
+		r.Name(), r.GetTag("environment"), r.GetZone()))
+	return ec2.PushSSHKey(config.GlobalConfig.EC2ConnectKeyPath)
+}
