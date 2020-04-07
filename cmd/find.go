@@ -17,7 +17,6 @@ var findCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(findCmd)
-
 }
 
 func findCmdFunc(cmd *cobra.Command, args []string) {
@@ -26,7 +25,7 @@ func findCmdFunc(cmd *cobra.Command, args []string) {
 	output := filterCacheList(&cacheList, cmd.Annotations)
 
 	for _, r := range output {
-		fmt.Printf(r.RenderLongOutput())
+		fmt.Print(r.RenderLongOutput())
 	}
 
 }
