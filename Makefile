@@ -14,9 +14,9 @@ build: build_darwin build_linux
 clean:
 	rm build/*
 
-test-style:
+test-lint:
 	@echo
-	@echo "==> Running style checks <=="
+	@echo "==> Running linters <=="
 	scripts/validate-go.sh
 
 test-unit:

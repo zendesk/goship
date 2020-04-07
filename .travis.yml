@@ -1,5 +1,24 @@
 language: go
-script:
-  - make test-unit
-  - make test-style
-  - make
+
+go:
+  - 1.14.x
+
+install: true
+
+cache:
+  directories:
+    - $GOPATH/pkg/mod
+
+jobs:
+  include:
+    - stage: "Compile"
+      name: "Compile Packages and Dependencies"
+      script: make build
+    - stage: "Tests"
+      name: "Unit Tests"
+      script: make test-unit
+    - stage: "Code Quality"
+      name: "Code Quality Analysis"
+      before_script:
+        - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.24.0
+      script: make test-lint
