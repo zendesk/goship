@@ -17,7 +17,7 @@ func ChooseFromList(resourcesList []resources.Resource) (resources.Resource, err
 	} else if len(resourcesList) > 1 {
 		for i, r := range resourcesList {
 			fmt.Printf("%d. ", i+1)
-			fmt.Printf(r.RenderShortOutput())
+			fmt.Print(r.RenderShortOutput())
 		}
 
 		reader := bufio.NewReader(os.Stdin)
@@ -25,10 +25,10 @@ func ChooseFromList(resourcesList []resources.Resource) (resources.Resource, err
 		choose, _ := reader.ReadString('\n')
 		idx, err := strconv.Atoi(strings.TrimSuffix(choose, "\n"))
 		if len(resourcesList)+1 <= idx || idx < 1 || err != nil {
-			return nil, fmt.Errorf("Unknown choose %s", choose)
+			return nil, fmt.Errorf("unknown choose %s", choose)
 		}
 		return resourcesList[idx-1], nil
 	} else {
-		return nil, fmt.Errorf("No possible elements to display")
+		return nil, fmt.Errorf("no possible elements to display")
 	}
 }

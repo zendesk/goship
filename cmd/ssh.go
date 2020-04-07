@@ -84,5 +84,9 @@ func sshCmdFunc(cmd *cobra.Command, args []string) {
 		Cmd:    sshCommandWithArgs,
 		Env:    env,
 	}
-	comm.Exec()
+	err = comm.Exec()
+	if err != nil {
+		fmt.Printf("Error while executing command %s", err)
+		os.Exit(1)
+	}
 }

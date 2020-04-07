@@ -32,5 +32,4 @@ func CheckForNewVersion() {
 	if result.Outdated && config.GlobalConfig.Verbose {
 		color.PrintYellow(fmt.Sprintf("Newer version (%s) available! Checkout project repository to upgrade to the newest version.\n", result.Current))
 	}
-	return
 }

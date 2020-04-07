@@ -35,7 +35,7 @@ func validateScpCmdFunc(cmd *cobra.Command, args []string) error {
 		cmd.Annotations["local_path"] = cmd.Annotations["copy_from"]
 		cmd.Annotations["direction"] = "to"
 	} else {
-		return errors.New("None of paths is a remote path")
+		return errors.New("none of paths is a remote path")
 	}
 	return nil
 }
@@ -89,6 +89,9 @@ func scpCmdFunc(cmd *cobra.Command, args []string) {
 		Cmd:    baseCommand,
 		Env:    env,
 	}
-	comm.Exec()
-
+	err = comm.Exec()
+	if err != nil {
+		fmt.Printf("Error while executing command %s", err)
+		os.Exit(1)
+	}
 }
