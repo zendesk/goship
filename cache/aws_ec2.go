@@ -62,12 +62,15 @@ func (g *AwsEc2Cache) Len() int {
 
 // Refresh refreshes resources
 func (g *AwsEc2Cache) Refresh(force bool) (refreshed bool, err error) {
-	if g.cacheOutdated() == false && force == false {
-		g.Read()
-		return false, nil
+	if !g.cacheOutdated() && !force {
+		err = g.Read()
+		return false, err
 	}
 
-	g.Provider.Init()
+	err = g.Provider.Init()
+	if err != nil {
+		return false, err
+	}
 
 	result, err := g.Provider.GetResources()
 	if err != nil {

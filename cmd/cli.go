@@ -66,14 +66,14 @@ func init() {
 	RootCmd.PersistentFlags().StringP("cache-file-prefix", "", "goship_cache_", "Cache file prefix")
 	RootCmd.PersistentFlags().UintP("cache-validity", "t", 300, "Cache validity in seconds")
 
-	viper.BindPFlag("username", RootCmd.PersistentFlags().Lookup("username"))
-	viper.BindPFlag("ssh-command", RootCmd.PersistentFlags().Lookup("ssh-command"))
-	viper.BindPFlag("use_private_network", RootCmd.PersistentFlags().Lookup("use-private-network"))
-	viper.BindPFlag("use_dns", RootCmd.PersistentFlags().Lookup("use-dns"))
-	viper.BindPFlag("cache_directory", RootCmd.PersistentFlags().Lookup("cache-directory"))
-	viper.BindPFlag("cache_file_prefix", RootCmd.PersistentFlags().Lookup("cache-file-prefix"))
-	viper.BindPFlag("cache_validity", RootCmd.PersistentFlags().Lookup("cache-validity"))
-	viper.BindPFlag("verbose", RootCmd.PersistentFlags().Lookup("verbose"))
+	_ = viper.BindPFlag("username", RootCmd.PersistentFlags().Lookup("username"))
+	_ = viper.BindPFlag("ssh-command", RootCmd.PersistentFlags().Lookup("ssh-command"))
+	_ = viper.BindPFlag("use_private_network", RootCmd.PersistentFlags().Lookup("use-private-network"))
+	_ = viper.BindPFlag("use_dns", RootCmd.PersistentFlags().Lookup("use-dns"))
+	_ = viper.BindPFlag("cache_directory", RootCmd.PersistentFlags().Lookup("cache-directory"))
+	_ = viper.BindPFlag("cache_file_prefix", RootCmd.PersistentFlags().Lookup("cache-file-prefix"))
+	_ = viper.BindPFlag("cache_validity", RootCmd.PersistentFlags().Lookup("cache-validity"))
+	_ = viper.BindPFlag("verbose", RootCmd.PersistentFlags().Lookup("verbose"))
 }
 
 // initConfig reads in config file and ENV variables if set.

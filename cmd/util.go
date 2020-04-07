@@ -71,10 +71,13 @@ func getCacheList() cache.GlobalCacheList {
 
 	cacheList := initCaches()
 	if len(cacheList) == 0 {
-		color.PrintYellow(fmt.Sprintf("WARNING: No valid providers configured. Please refer to the documentation in order to configure it.\n"))
+		color.PrintYellow(fmt.Sprint("WARNING: No valid providers configured. Please refer to the documentation in order to configure it.\n"))
 	}
 	refreshStart := time.Now()
-	cacheList.RefreshInParallel(false)
+	err := cacheList.RefreshInParallel(false)
+	if err != nil {
+		color.PrintRed(fmt.Sprintf("Error while getting cache list: %s", err.Error()))
+	}
 	refreshElapsed := time.Since(refreshStart)
 
 	if config.GlobalConfig.Verbose {
@@ -88,7 +91,7 @@ func filterCacheList(cacheList *cache.GlobalCacheList, criteria map[string]strin
 	for _, c := range *cacheList {
 		for _, r := range c.Resources() {
 			if env, exists := criteria["environment"]; exists {
-				if strings.Contains(r.GetTag("environment"), env) == false {
+				if !strings.Contains(r.GetTag("environment"), env) {
 					continue
 				}
 			}
@@ -112,7 +115,7 @@ func filterCacheList(cacheList *cache.GlobalCacheList, criteria map[string]strin
 func validatePortNumber(portNumber string) error {
 	_, err := strconv.Atoi(portNumber)
 	if err != nil {
-		return fmt.Errorf("Unknown port value: %s", portNumber)
+		return fmt.Errorf("unknown port value: %s", portNumber)
 	}
 	return nil
 }
