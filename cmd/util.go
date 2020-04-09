@@ -71,7 +71,7 @@ func getCacheList() cache.GlobalCacheList {
 
 	cacheList := initCaches()
 	if len(cacheList) == 0 {
-		color.PrintYellow(fmt.Sprint("WARNING: No valid providers configured. Please refer to the documentation in order to configure it.\n"))
+		color.PrintYellow("WARNING: No valid providers configured. Please refer to the documentation in order to configure it.\n")
 	}
 	refreshStart := time.Now()
 	err := cacheList.RefreshInParallel(false)
