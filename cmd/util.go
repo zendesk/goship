@@ -149,6 +149,7 @@ func parseScpURL(p string) (string, string) {
 	return strings.Split(p, ":")[0], strings.Split(p, ":")[1]
 }
 
+// pushSSHKey executes PushSSKey on EC2 resource types
 func pushSSHKey(r resources.Resource) error {
 	ec2, ok := r.(*resources.Ec2Instance)
 	if !ok {
@@ -157,4 +158,13 @@ func pushSSHKey(r resources.Resource) error {
 	color.PrintGreen(fmt.Sprintf("Sending SSH key to AWS SSM for %s (%s) in %s\n",
 		r.Name(), r.GetTag("environment"), r.GetZone()))
 	return ec2.PushSSHKey(config.GlobalConfig.EC2ConnectKeyPath)
+}
+
+// sshPrivKeyPath returns SSH private key path for a given public key
+func sshPrivKeyPath(publicKeyPath string) string {
+	if strings.HasSuffix(publicKeyPath, ".pem") {
+		return publicKeyPath
+	} else {
+		return strings.TrimSuffix(publicKeyPath, ".pub")
+	}
 }

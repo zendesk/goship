@@ -82,6 +82,7 @@ func scpCmdFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("Failed to push SSH key: %v", err)
 			os.Exit(1)
 		}
+		baseCommand = append(baseCommand, "-i", sshPrivKeyPath(config.GlobalConfig.EC2ConnectKeyPath))
 	}
 
 	color.PrintGreen(fmt.Sprintf("Copying %s %s (%s)\n",

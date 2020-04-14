@@ -77,7 +77,7 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 	config.GlobalConfig.UseEC2Connect, _ = strconv.ParseBool(useEC2Connect)
 
 	if config.GlobalConfig.UseEC2Connect {
-		config.GlobalConfig.CacheDirectory, _ = ui.Ask("Path to SSH key file used to connect via EC2 Instance Connect", &input.Options{
+		config.GlobalConfig.CacheDirectory, _ = ui.Ask("Path to SSH key file (.pub or .pem) used to connect via EC2 Instance Connect", &input.Options{
 			Required:     true,
 			Default:      RootCmd.PersistentFlags().Lookup("ec2-connect-key-path").DefValue,
 			Loop:         true,
