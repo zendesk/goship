@@ -57,7 +57,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringP("username", "u", "", "Username to use when logging into resources")
 	RootCmd.PersistentFlags().BoolP("use-ec2-connect", "e", false, "Use EC2 Instance Connect to push your SSH key before connecting to the instance ")
-	RootCmd.PersistentFlags().StringP("ec2-connect-key-path", "k", "~/.ssh/id_rsa.pub", "Path to SSH key file used to connect via EC2 Instance Connect")
+	RootCmd.PersistentFlags().StringP("ec2-connect-key-path", "k", "~/.ssh/id_rsa.pub", "Path to public SSH key file used to connect via EC2 Instance Connect")
 	RootCmd.PersistentFlags().StringP("ssh-command", "c", "", "command to be executed via SSH (applicable to ssh command only)")
 	RootCmd.PersistentFlags().BoolP("verbose", "v", false, "Be more verbose")
 	RootCmd.PersistentFlags().BoolP("use-private-network", "p", false, "Use private resource identification")

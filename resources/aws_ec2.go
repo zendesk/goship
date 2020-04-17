@@ -121,7 +121,6 @@ func (i *Ec2Instance) PushSSHKey(KeyPath string) error {
 		return fmt.Errorf("failed to read SSH key from %s: %w", config.GlobalConfig.EC2ConnectKeyPath, err)
 	}
 
-
 	s, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 		Profile:           i.ProfileName,
