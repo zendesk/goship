@@ -7,6 +7,7 @@ type Resource interface {
 	ResourceID() string
 	GetTag(string) string
 	GetZone() string
+	GetRegion() string
 	RenderShortOutput() string
 	RenderLongOutput() string
 	SortKey() string

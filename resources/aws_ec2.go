@@ -70,6 +70,13 @@ func (i *Ec2Instance) GetZone() string {
 	return *i.NativeObject.Placement.AvailabilityZone
 }
 
+// GetRegion returns Region
+func (i *Ec2Instance) GetRegion() string {
+	zone := i.GetZone()
+	region := zone[:len(zone)-1]
+	return region
+}
+
 // RenderShortOutput renders the list output for resource
 func (i *Ec2Instance) RenderShortOutput() string {
 	var tpl bytes.Buffer
@@ -114,13 +121,11 @@ func (i *Ec2Instance) PushSSHKey(KeyPath string) error {
 		return fmt.Errorf("failed to read SSH key from %s: %w", config.GlobalConfig.EC2ConnectKeyPath, err)
 	}
 
-	zone := i.GetZone()
-	region := zone[:len(zone)-1]
 
 	s, err := session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 		Profile:           i.ProfileName,
-		Config:            aws.Config{Region: aws.String(region)},
+		Config:            aws.Config{Region: aws.String(i.GetRegion())},
 	})
 
 	if err != nil {
@@ -129,7 +134,7 @@ func (i *Ec2Instance) PushSSHKey(KeyPath string) error {
 
 	svc := ec2instanceconnect.New(s)
 	input := &ec2instanceconnect.SendSSHPublicKeyInput{
-		AvailabilityZone: aws.String(zone),
+		AvailabilityZone: aws.String(i.GetZone()),
 		InstanceId:       aws.String(i.ResourceID()),
 		InstanceOSUser:   aws.String(config.GlobalConfig.LoginUsername),
 		SSHPublicKey:     aws.String(string(key)),
