@@ -1,0 +1,25 @@
+name: test
+
+on:
+  push
+
+env:
+  GOPATH: ${{ github.workspace }}/gopath
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zendesk/checkout@v2
+      - uses: zendesk/setup-go@v2
+        with:
+          go-version: 1.14.x
+      - name: Compile Packages and Dependencies
+        run: make build
+      - name: Unit Tests
+        run: make test-unit
+      - name: Code Quality Analysis
+        run: |
+          curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.24.0
+          make test-lint
+
