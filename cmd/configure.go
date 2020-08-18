@@ -12,7 +12,15 @@ import (
 	"strconv"
 )
 
-// helloCmd represents the hello command
+// default Providers configuration, for easier user onboarding
+var defaultProviderConfig = `
+providers:
+    aws.ec2:
+      - profile: default
+        regions: 
+        - us-east-1
+`
+
 var configureCmd = &cobra.Command{
 	Use:   "configure",
 	Short: "Runs configuration process for basic options",
@@ -57,6 +65,24 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 	ui := &input.UI{
 		Writer: os.Stdout,
 		Reader: os.Stdin,
+	}
+
+	useEC2Connect, _ := ui.Ask("Use EC2 Instance Connect to connect to instances?", &input.Options{
+		Required:     true,
+		Loop:         true,
+		Default:      RootCmd.PersistentFlags().Lookup("use-ec2-connect").DefValue,
+		ValidateFunc: validateBool,
+	})
+
+	config.GlobalConfig.UseEC2Connect, _ = strconv.ParseBool(useEC2Connect)
+
+	if config.GlobalConfig.UseEC2Connect {
+		config.GlobalConfig.CacheDirectory, _ = ui.Ask("Path to SSH key file (.pub or .pem) used to connect via EC2 Instance Connect", &input.Options{
+			Required:     true,
+			Default:      RootCmd.PersistentFlags().Lookup("ec2-connect-key-path").DefValue,
+			Loop:         true,
+			ValidateFunc: validatePath,
+		})
 	}
 
 	config.GlobalConfig.LoginUsername, _ = ui.Ask("What username should be used when connecting to remote resources?", &input.Options{
@@ -125,6 +151,7 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 	})
 
 	c, _ := yaml.Marshal(config.GlobalConfig)
+	c = append(c, defaultProviderConfig...)
 	fmt.Printf("Config file: %s", viper.ConfigFileUsed())
 	cacheFile, err := os.Create(ConfigFile)
 	if err != nil {
@@ -138,5 +165,6 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 		color.PrintRed(fmt.Sprintf("Error while writing config file %s: %s\n", ConfigFile, err.Error()))
 		os.Exit(1)
 	}
-	color.PrintGreen(fmt.Sprintf("Config file saved to `%s`. Please refer to documentation in order to configure cloud providers\n", ConfigFile))
+
+	color.PrintGreen(fmt.Sprintf("Config file saved to `%s`. Please refer to documentation in order to customize cloud providers\n", ConfigFile))
 }

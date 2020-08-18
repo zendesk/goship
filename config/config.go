@@ -2,6 +2,8 @@ package config
 
 // Config represents goship config
 type Config struct {
+	UseEC2Connect     bool   `mapstructure:"use_ec2_connect" yaml:"use_ec2_connect"`
+	EC2ConnectKeyPath string `mapstructure:"ec2_connect_key_path" yaml:"ec2_connect_key_path"`
 	LoginUsername     string `mapstructure:"username" yaml:"username"`
 	UsePrivateNetwork bool   `mapstructure:"use_private_network" yaml:"use_private_network"`
 	UseDNS            bool   `mapstructure:"use_dns" yaml:"use_dns"`

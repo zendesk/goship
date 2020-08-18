@@ -75,6 +75,16 @@ func scpCmdFunc(cmd *cobra.Command, args []string) {
 	} else {
 		baseCommand = append(baseCommand, command.CopyToRemoteCmd()...)
 	}
+
+	if config.GlobalConfig.UseEC2Connect {
+		err := pushSSHKey(resource)
+		if err != nil {
+			fmt.Printf("Failed to push SSH key: %v", err)
+			os.Exit(1)
+		}
+		baseCommand = append(baseCommand, "-i", sshPrivKeyPath(config.GlobalConfig.EC2ConnectKeyPath))
+	}
+
 	color.PrintGreen(fmt.Sprintf("Copying %s %s (%s)\n",
 		cmd.Annotations["direction"], resource.Name(),
 		resource.GetTag("environment")))

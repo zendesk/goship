@@ -55,18 +55,22 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&ConfigFile, "config", "", "config file (default is $HOME/.goship.yaml)")
 
-	RootCmd.PersistentFlags().BoolVarP(&forceUncache, "uncache", "", false, "Drop any existing cache before obtaining resource list")
 	RootCmd.PersistentFlags().StringP("username", "u", "", "Username to use when logging into resources")
+	RootCmd.PersistentFlags().BoolP("use-ec2-connect", "e", false, "Use EC2 Instance Connect to push your SSH key before connecting to the instance ")
+	RootCmd.PersistentFlags().StringP("ec2-connect-key-path", "k", "~/.ssh/id_rsa.pub", "Path to public SSH key file used to connect via EC2 Instance Connect")
 	RootCmd.PersistentFlags().StringP("ssh-command", "c", "", "command to be executed via SSH (applicable to ssh command only)")
 	RootCmd.PersistentFlags().BoolP("verbose", "v", false, "Be more verbose")
 	RootCmd.PersistentFlags().BoolP("use-private-network", "p", false, "Use private resource identification")
 	RootCmd.PersistentFlags().BoolP("use-dns", "d", false, "Use DNS instead of Resource IP")
 
+	RootCmd.PersistentFlags().BoolVarP(&forceUncache, "uncache", "", false, "Drop any existing cache before obtaining resource list")
 	RootCmd.PersistentFlags().StringP("cache-directory", "", "/tmp", "Cache directory (default is /tmp)")
 	RootCmd.PersistentFlags().StringP("cache-file-prefix", "", "goship_cache_", "Cache file prefix")
 	RootCmd.PersistentFlags().UintP("cache-validity", "t", 300, "Cache validity in seconds")
 
 	_ = viper.BindPFlag("username", RootCmd.PersistentFlags().Lookup("username"))
+	_ = viper.BindPFlag("use-ec2-connect", RootCmd.PersistentFlags().Lookup("use-ec2-connect"))
+	_ = viper.BindPFlag("ec2-connect-key-path", RootCmd.PersistentFlags().Lookup("ec2-connect-key-path"))
 	_ = viper.BindPFlag("ssh-command", RootCmd.PersistentFlags().Lookup("ssh-command"))
 	_ = viper.BindPFlag("use_private_network", RootCmd.PersistentFlags().Lookup("use-private-network"))
 	_ = viper.BindPFlag("use_dns", RootCmd.PersistentFlags().Lookup("use-dns"))

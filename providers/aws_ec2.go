@@ -68,6 +68,7 @@ func (p *AwsEc2Provider) GetResources() (resourcesList resources.ResourceList, e
 			for _, inst := range res.Instances {
 				r := resources.NewEc2Instance()
 				r.NativeObject = *inst
+				r.ProfileName = p.AwsProfileName
 				resourcesList = append(resourcesList, r)
 			}
 		}
