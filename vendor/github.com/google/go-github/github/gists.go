@@ -6,6 +6,7 @@
 package github
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
@@ -29,6 +30,7 @@ type Gist struct {
 	GitPushURL  *string                   `json:"git_push_url,omitempty"`
 	CreatedAt   *time.Time                `json:"created_at,omitempty"`
 	UpdatedAt   *time.Time                `json:"updated_at,omitempty"`
+	NodeID      *string                   `json:"node_id,omitempty"`
 }
 
 func (g Gist) String() string {
@@ -58,7 +60,8 @@ type GistCommit struct {
 	Version      *string      `json:"version,omitempty"`
 	User         *User        `json:"user,omitempty"`
 	ChangeStatus *CommitStats `json:"change_status,omitempty"`
-	CommitedAt   *Timestamp   `json:"commited_at,omitempty"`
+	CommittedAt  *Timestamp   `json:"committed_at,omitempty"`
+	NodeID       *string      `json:"node_id,omitempty"`
 }
 
 func (gc GistCommit) String() string {
@@ -72,6 +75,7 @@ type GistFork struct {
 	ID        *string    `json:"id,omitempty"`
 	CreatedAt *Timestamp `json:"created_at,omitempty"`
 	UpdatedAt *Timestamp `json:"updated_at,omitempty"`
+	NodeID    *string    `json:"node_id,omitempty"`
 }
 
 func (gf GistFork) String() string {
@@ -93,7 +97,7 @@ type GistListOptions struct {
 // user.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#list-gists
-func (s *GistsService) List(user string, opt *GistListOptions) ([]*Gist, *Response, error) {
+func (s *GistsService) List(ctx context.Context, user string, opt *GistListOptions) ([]*Gist, *Response, error) {
 	var u string
 	if user != "" {
 		u = fmt.Sprintf("users/%v/gists", user)
@@ -111,7 +115,7 @@ func (s *GistsService) List(user string, opt *GistListOptions) ([]*Gist, *Respon
 	}
 
 	var gists []*Gist
-	resp, err := s.client.Do(req, &gists)
+	resp, err := s.client.Do(ctx, req, &gists)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -122,7 +126,7 @@ func (s *GistsService) List(user string, opt *GistListOptions) ([]*Gist, *Respon
 // ListAll lists all public gists.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#list-gists
-func (s *GistsService) ListAll(opt *GistListOptions) ([]*Gist, *Response, error) {
+func (s *GistsService) ListAll(ctx context.Context, opt *GistListOptions) ([]*Gist, *Response, error) {
 	u, err := addOptions("gists/public", opt)
 	if err != nil {
 		return nil, nil, err
@@ -134,7 +138,7 @@ func (s *GistsService) ListAll(opt *GistListOptions) ([]*Gist, *Response, error)
 	}
 
 	var gists []*Gist
-	resp, err := s.client.Do(req, &gists)
+	resp, err := s.client.Do(ctx, req, &gists)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -145,7 +149,7 @@ func (s *GistsService) ListAll(opt *GistListOptions) ([]*Gist, *Response, error)
 // ListStarred lists starred gists of authenticated user.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#list-gists
-func (s *GistsService) ListStarred(opt *GistListOptions) ([]*Gist, *Response, error) {
+func (s *GistsService) ListStarred(ctx context.Context, opt *GistListOptions) ([]*Gist, *Response, error) {
 	u, err := addOptions("gists/starred", opt)
 	if err != nil {
 		return nil, nil, err
@@ -157,7 +161,7 @@ func (s *GistsService) ListStarred(opt *GistListOptions) ([]*Gist, *Response, er
 	}
 
 	var gists []*Gist
-	resp, err := s.client.Do(req, &gists)
+	resp, err := s.client.Do(ctx, req, &gists)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -168,14 +172,15 @@ func (s *GistsService) ListStarred(opt *GistListOptions) ([]*Gist, *Response, er
 // Get a single gist.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#get-a-single-gist
-func (s *GistsService) Get(id string) (*Gist, *Response, error) {
+func (s *GistsService) Get(ctx context.Context, id string) (*Gist, *Response, error) {
 	u := fmt.Sprintf("gists/%v", id)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	gist := new(Gist)
-	resp, err := s.client.Do(req, gist)
+	resp, err := s.client.Do(ctx, req, gist)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -186,14 +191,15 @@ func (s *GistsService) Get(id string) (*Gist, *Response, error) {
 // GetRevision gets a specific revision of a gist.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#get-a-specific-revision-of-a-gist
-func (s *GistsService) GetRevision(id, sha string) (*Gist, *Response, error) {
+func (s *GistsService) GetRevision(ctx context.Context, id, sha string) (*Gist, *Response, error) {
 	u := fmt.Sprintf("gists/%v/%v", id, sha)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	gist := new(Gist)
-	resp, err := s.client.Do(req, gist)
+	resp, err := s.client.Do(ctx, req, gist)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -204,14 +210,15 @@ func (s *GistsService) GetRevision(id, sha string) (*Gist, *Response, error) {
 // Create a gist for authenticated user.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#create-a-gist
-func (s *GistsService) Create(gist *Gist) (*Gist, *Response, error) {
+func (s *GistsService) Create(ctx context.Context, gist *Gist) (*Gist, *Response, error) {
 	u := "gists"
 	req, err := s.client.NewRequest("POST", u, gist)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	g := new(Gist)
-	resp, err := s.client.Do(req, g)
+	resp, err := s.client.Do(ctx, req, g)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -222,14 +229,15 @@ func (s *GistsService) Create(gist *Gist) (*Gist, *Response, error) {
 // Edit a gist.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#edit-a-gist
-func (s *GistsService) Edit(id string, gist *Gist) (*Gist, *Response, error) {
+func (s *GistsService) Edit(ctx context.Context, id string, gist *Gist) (*Gist, *Response, error) {
 	u := fmt.Sprintf("gists/%v", id)
 	req, err := s.client.NewRequest("PATCH", u, gist)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	g := new(Gist)
-	resp, err := s.client.Do(req, g)
+	resp, err := s.client.Do(ctx, req, g)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -239,16 +247,21 @@ func (s *GistsService) Edit(id string, gist *Gist) (*Gist, *Response, error) {
 
 // ListCommits lists commits of a gist.
 //
-// Github API docs: https://developer.github.com/v3/gists/#list-gist-commits
-func (s *GistsService) ListCommits(id string) ([]*GistCommit, *Response, error) {
+// GitHub API docs: https://developer.github.com/v3/gists/#list-gist-commits
+func (s *GistsService) ListCommits(ctx context.Context, id string, opt *ListOptions) ([]*GistCommit, *Response, error) {
 	u := fmt.Sprintf("gists/%v/commits", id)
+	u, err := addOptions(u, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	var gistCommits []*GistCommit
-	resp, err := s.client.Do(req, &gistCommits)
+	resp, err := s.client.Do(ctx, req, &gistCommits)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -259,49 +272,49 @@ func (s *GistsService) ListCommits(id string) ([]*GistCommit, *Response, error) 
 // Delete a gist.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#delete-a-gist
-func (s *GistsService) Delete(id string) (*Response, error) {
+func (s *GistsService) Delete(ctx context.Context, id string) (*Response, error) {
 	u := fmt.Sprintf("gists/%v", id)
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Star a gist on behalf of authenticated user.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#star-a-gist
-func (s *GistsService) Star(id string) (*Response, error) {
+func (s *GistsService) Star(ctx context.Context, id string) (*Response, error) {
 	u := fmt.Sprintf("gists/%v/star", id)
 	req, err := s.client.NewRequest("PUT", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // Unstar a gist on a behalf of authenticated user.
 //
-// Github API docs: https://developer.github.com/v3/gists/#unstar-a-gist
-func (s *GistsService) Unstar(id string) (*Response, error) {
+// GitHub API docs: https://developer.github.com/v3/gists/#unstar-a-gist
+func (s *GistsService) Unstar(ctx context.Context, id string) (*Response, error) {
 	u := fmt.Sprintf("gists/%v/star", id)
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err
 	}
-	return s.client.Do(req, nil)
+	return s.client.Do(ctx, req, nil)
 }
 
 // IsStarred checks if a gist is starred by authenticated user.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#check-if-a-gist-is-starred
-func (s *GistsService) IsStarred(id string) (bool, *Response, error) {
+func (s *GistsService) IsStarred(ctx context.Context, id string) (bool, *Response, error) {
 	u := fmt.Sprintf("gists/%v/star", id)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return false, nil, err
 	}
-	resp, err := s.client.Do(req, nil)
+	resp, err := s.client.Do(ctx, req, nil)
 	starred, err := parseBoolResponse(err)
 	return starred, resp, err
 }
@@ -309,7 +322,7 @@ func (s *GistsService) IsStarred(id string) (bool, *Response, error) {
 // Fork a gist.
 //
 // GitHub API docs: https://developer.github.com/v3/gists/#fork-a-gist
-func (s *GistsService) Fork(id string) (*Gist, *Response, error) {
+func (s *GistsService) Fork(ctx context.Context, id string) (*Gist, *Response, error) {
 	u := fmt.Sprintf("gists/%v/forks", id)
 	req, err := s.client.NewRequest("POST", u, nil)
 	if err != nil {
@@ -317,7 +330,7 @@ func (s *GistsService) Fork(id string) (*Gist, *Response, error) {
 	}
 
 	g := new(Gist)
-	resp, err := s.client.Do(req, g)
+	resp, err := s.client.Do(ctx, req, g)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -327,8 +340,8 @@ func (s *GistsService) Fork(id string) (*Gist, *Response, error) {
 
 // ListForks lists forks of a gist.
 //
-// Github API docs: https://developer.github.com/v3/gists/#list-gist-forks
-func (s *GistsService) ListForks(id string) ([]*GistFork, *Response, error) {
+// GitHub API docs: https://developer.github.com/v3/gists/#list-gist-forks
+func (s *GistsService) ListForks(ctx context.Context, id string) ([]*GistFork, *Response, error) {
 	u := fmt.Sprintf("gists/%v/forks", id)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -336,7 +349,7 @@ func (s *GistsService) ListForks(id string) ([]*GistFork, *Response, error) {
 	}
 
 	var gistForks []*GistFork
-	resp, err := s.client.Do(req, &gistForks)
+	resp, err := s.client.Do(ctx, req, &gistForks)
 	if err != nil {
 		return nil, resp, err
 	}
