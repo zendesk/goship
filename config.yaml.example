@@ -10,5 +10,6 @@
 #    aws.ec2:
 #        - profile: production
 #          regions: [us-east-1]
+#          preinit_hook: /usr/bin/saml2aws ...
 #        - profile: sandbox
 #          regions: [eu-west-1]
