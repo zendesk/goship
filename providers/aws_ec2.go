@@ -2,6 +2,9 @@ package providers
 
 import (
 	"fmt"
+	"github.com/zendesk/goship/config"
+	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -22,7 +25,22 @@ type AwsEc2Provider struct {
 // InitAwsEc2ProvidersFromCfg creates AwsEc2Provider list based on config sections
 func InitAwsEc2ProvidersFromCfg(cfg map[interface{}]interface{}) (p []*AwsEc2Provider, err error) {
 	profile := cfg["profile"].(string)
-
+	if _, ok := cfg["preinit_hook"]; ok {
+		if config.GlobalConfig.Verbose {
+			fmt.Printf("Executing preinit hook: %s\n", cfg["preinit_hook"])
+		}
+		command := strings.Split(cfg["preinit_hook"].(string), " ")
+		cmd := exec.Command(
+			command[0], command[1:]...,
+		)
+		cmd.Stdout = os.Stdout
+		cmd.Stdin = os.Stdin
+		cmd.Stderr = os.Stderr
+		err = cmd.Run()
+		if err != nil {
+			color.PrintRed(fmt.Sprintf("Error while running the preinit `%s` hook: %s\n", cfg["preinit_hook"], err.Error()))
+		}
+	}
 	for _, region := range cfg["regions"].([]interface{}) {
 		provider := &AwsEc2Provider{
 			AwsRegion:      region.(string),
