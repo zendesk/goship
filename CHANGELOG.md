@@ -1,3 +1,9 @@
+## 1.0.6 (September 14, 2020)
+
+NEW FEATURES:
+* [[GH-21](https://github.com/zendesk/goship/pull/21)]: Add support for preinit_hook command for provider
+
+
 ## 1.0.5 (January 9, 2020)
 
 NEW FEATURES:
