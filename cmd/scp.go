@@ -1,9 +1,15 @@
 package cmd
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path"
+	"strconv"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/zendesk/goship/color"
@@ -68,6 +74,60 @@ func scpCmdFunc(cmd *cobra.Command, args []string) {
 		cmd.Annotations["local_path"],
 	}
 	baseCommand := []string{config.GlobalConfig.ScpBinary}
+
+	if config.GlobalConfig.UseSSM {
+		fmt.Println("Using SSM")
+		//Keep tmp pem key in cache directory
+		currentTime := time.Now()
+		tempKeyName := strconv.FormatInt(currentTime.UnixNano(), 10)
+		pubKey := path.Join(config.GlobalConfig.CacheDirectory, tempKeyName+".pub")
+		privKey := path.Join(config.GlobalConfig.CacheDirectory, tempKeyName)
+		//here we need to generate SSH keys
+		privKeyBlob, errKey := rsa.GenerateKey(rand.Reader, 4092)
+		if errKey != nil {
+			fmt.Printf("Error while generating key %s", errKey)
+			os.Exit(1)
+		}
+		pubKeyBlob := privKeyBlob.PublicKey
+		if errPubPEM := utils.SavePublicPEMKey(pubKey, &pubKeyBlob); errPubPEM != nil {
+			fmt.Printf("Error while generating public key %s", errPubPEM)
+			os.Exit(1)
+		}
+		defer func() {
+			if err = utils.DeleteTempKey(pubKey); err != nil {
+				fmt.Printf("Error while removing old key %s", err)
+				os.Exit(1)
+			}
+		}()
+
+		if errPrivPEM := utils.SavePrivPEMKey(privKey, privKeyBlob); errPrivPEM != nil {
+			fmt.Printf("Error while saving private key %s", errPrivPEM)
+			os.Exit(1)
+		}
+		defer func() {
+			if err = utils.DeleteTempKey(privKey); err != nil {
+				fmt.Printf("Error while removing old private key %s", err)
+				os.Exit(1)
+			}
+		}()
+		pubKeyData := []byte{}
+		if pubKey != "" {
+			pubKeyData, err = ioutil.ReadFile(pubKey)
+			if err != nil {
+				fmt.Printf("Error while removing old private key %s", err)
+				os.Exit(1)
+			}
+		}
+		proxyCmd, err := startSSH(resource, pubKeyData)
+		if err != nil {
+			fmt.Printf("Error while starting SSH session %s", err)
+			os.Exit(1)
+		}
+		baseCommand = append(baseCommand, "-i", privKey)
+
+		baseCommand = append(baseCommand, proxyCmd...)
+
+	}
 	baseCommand = append(baseCommand, config.GlobalConfig.ScpExtraParams...)
 
 	if checkIfRemotePath(cmd.Annotations["copy_from"]) {
@@ -79,15 +139,14 @@ func scpCmdFunc(cmd *cobra.Command, args []string) {
 		cmd.Annotations["direction"], resource.Name(),
 		resource.GetTag("environment")))
 
-	if config.GlobalConfig.Verbose {
-		color.PrintGreen(fmt.Sprintf("%s\n", baseCommand))
-	}
-
 	env := os.Environ()
 	comm := Command{
 		Binary: config.GlobalConfig.ScpBinary,
 		Cmd:    baseCommand,
 		Env:    env,
+	}
+	if config.GlobalConfig.Verbose {
+		color.PrintGreen(fmt.Sprintf("%s\n", baseCommand))
 	}
 	err = comm.Exec()
 	if err != nil {

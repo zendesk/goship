@@ -5,7 +5,9 @@ type Resource interface {
 	ConnectIdentifier(bool, bool) string
 	Name() string
 	ResourceID() string
+	PlacementAZ() string
 	GetTag(string) string
+	GetZone() string
 	RenderShortOutput() string
 	RenderLongOutput() string
 	SortKey() string

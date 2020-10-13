@@ -80,6 +80,14 @@ func configureCmdFunc(cmd *cobra.Command, args []string) {
 	})
 	config.GlobalConfig.UseDNS, _ = strconv.ParseBool(useDNS)
 
+	useSSM, _ := ui.Ask("Use SSM when connecting to remote resources? [true/false]", &input.Options{
+		Required:     false,
+		Default:      RootCmd.PersistentFlags().Lookup("use-ssm").DefValue,
+		Loop:         true,
+		ValidateFunc: validateBool,
+	})
+	config.GlobalConfig.UseSSM, _ = strconv.ParseBool(useSSM)
+
 	config.GlobalConfig.CacheDirectory, _ = ui.Ask("Cache directory where goship cache will be stored", &input.Options{
 		Required:     false,
 		Default:      RootCmd.PersistentFlags().Lookup("cache-directory").DefValue,

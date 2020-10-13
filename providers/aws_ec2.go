@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/zendesk/goship/color"
+
 	"github.com/zendesk/goship/resources"
 )
 
@@ -86,6 +87,7 @@ func (p *AwsEc2Provider) GetResources() (resourcesList resources.ResourceList, e
 			for _, inst := range res.Instances {
 				r := resources.NewEc2Instance()
 				r.NativeObject = *inst
+				r.ProfileName = p.AwsProfileName
 				resourcesList = append(resourcesList, r)
 			}
 		}
