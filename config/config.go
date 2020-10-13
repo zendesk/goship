@@ -10,12 +10,12 @@ type Config struct {
 	CacheValidity     uint64 `mapstructure:"cache_validity" yaml:"cache_validity"`
 	Verbose           bool   `mapstructure:"verbose" yaml:"verbose"`
 
-	SSHBinary      string   `mapstructure:"ssh_binary" yaml:"ssh_binary"`
-	SSHExtraParams []string `mapstructure:"ssh_extra_params" yaml:"ssh_extra_params"`
-	ScpBinary      string   `mapstructure:"scp_binary" yaml:"scp_binary"`
-	ScpExtraParams []string `mapstructure:"scp_extra_params" yaml:"scp_extra_params"`
-
-	Providers map[string]interface{} `yaml:"providers,omitempty"`
+	SSHBinary      string                 `mapstructure:"ssh_binary" yaml:"ssh_binary"`
+	SSHExtraParams []string               `mapstructure:"ssh_extra_params" yaml:"ssh_extra_params"`
+	ScpBinary      string                 `mapstructure:"scp_binary" yaml:"scp_binary"`
+	ScpExtraParams []string               `mapstructure:"scp_extra_params" yaml:"scp_extra_params"`
+	UseSSM         bool                   `mapstructure:"use_ssm" yaml:"use_ssm"`
+	Providers      map[string]interface{} `yaml:"providers,omitempty"`
 }
 
 // GlobalConfig holds globally accessible config var
