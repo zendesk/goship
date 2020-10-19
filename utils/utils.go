@@ -22,10 +22,10 @@ func ChooseFromList(resourcesList []resources.Resource) (resources.Resource, err
 
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("Choose your ship: ")
-		choose, _ := reader.ReadString('\n')
-		idx, err := strconv.Atoi(strings.TrimSuffix(choose, "\n"))
+		choice, _ := reader.ReadString('\n')
+		idx, err := strconv.Atoi(strings.TrimSuffix(choice, "\n"))
 		if len(resourcesList)+1 <= idx || idx < 1 || err != nil {
-			return nil, fmt.Errorf("unknown choose %s", choose)
+			return nil, fmt.Errorf("unknown choice %s", choice)
 		}
 		return resourcesList[idx-1], nil
 	} else {
